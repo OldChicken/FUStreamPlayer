@@ -63,6 +63,7 @@
             self.currentStatus.text = @"FUPlayStatusPause";
             break;
             
+            
         default:
             break;
     }
@@ -74,7 +75,7 @@
 }
 
 - (IBAction)play:(id)sender {
-    NSData *pcmData = [NSData dataWithContentsOfFile: [[NSBundle mainBundle] pathForResource:@"test.pcm" ofType:nil]];
+    NSData *pcmData = [NSData dataWithContentsOfFile: [[NSBundle mainBundle] pathForResource:@"16k.pcm" ofType:nil]];
     [self.pcmPlayer playPcmData:pcmData];
 }
 

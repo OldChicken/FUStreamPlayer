@@ -15,6 +15,9 @@
 		85114CA1244080FA002DED3E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 85114CA0244080FA002DED3E /* main.m */; };
 		85114CAA244081CE002DED3E /* FUStreamPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 85114CA8244081CE002DED3E /* FUStreamPlayer.m */; };
 		85114CAB244081CE002DED3E /* test.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 85114CA9244081CE002DED3E /* test.pcm */; };
+		85338E2224567C850082F2DC /* sound.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 85338E2124567C850082F2DC /* sound.pcm */; };
+		85338E27245685A30082F2DC /* 8k.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 85338E25245685A20082F2DC /* 8k.pcm */; };
+		85338E28245685A30082F2DC /* 16k.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 85338E26245685A20082F2DC /* 16k.pcm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +34,9 @@
 		85114CA7244081CE002DED3E /* FUStreamPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUStreamPlayer.h; sourceTree = "<group>"; };
 		85114CA8244081CE002DED3E /* FUStreamPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUStreamPlayer.m; sourceTree = "<group>"; };
 		85114CA9244081CE002DED3E /* test.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.pcm; sourceTree = "<group>"; };
+		85338E2124567C850082F2DC /* sound.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sound.pcm; sourceTree = "<group>"; };
+		85338E25245685A20082F2DC /* 8k.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = 8k.pcm; sourceTree = "<group>"; };
+		85338E26245685A20082F2DC /* 16k.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = 16k.pcm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +69,9 @@
 		85114C8D244080F4002DED3E /* FUStreamPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				85338E25245685A20082F2DC /* 8k.pcm */,
+				85338E26245685A20082F2DC /* 16k.pcm */,
+				85338E2124567C850082F2DC /* sound.pcm */,
 				85114CA7244081CE002DED3E /* FUStreamPlayer.h */,
 				85114CA8244081CE002DED3E /* FUStreamPlayer.m */,
 				85114CA9244081CE002DED3E /* test.pcm */,
@@ -137,9 +146,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				85114C9E244080FA002DED3E /* LaunchScreen.storyboard in Resources */,
+				85338E2224567C850082F2DC /* sound.pcm in Resources */,
+				85338E28245685A30082F2DC /* 16k.pcm in Resources */,
 				85114C9B244080FA002DED3E /* Assets.xcassets in Resources */,
 				85114CAB244081CE002DED3E /* test.pcm in Resources */,
 				85114C99244080F4002DED3E /* Main.storyboard in Resources */,
+				85338E27245685A30082F2DC /* 8k.pcm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

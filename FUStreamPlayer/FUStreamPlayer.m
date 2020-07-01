@@ -6,7 +6,7 @@
 //  Copyright © 2019 ly-Mac. All rights reserved.
 //
 #import "FUStreamPlayer.h"
-
+#import <UIKit/UIKit.h>
 #define STREAM_PACKET_SIZE 5000
 
 @interface FUStreamPlayer(){
@@ -31,7 +31,10 @@
     self = [super init];
     
     NSLog(@"===FUStreamPlayer=== PcmPlayer [%@] has init",self);
-
+      
+    //    [_audioSession setCategory :AVAudioSessionCategoryPlayAndRecord error:nil];
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient
+                                          withOptions:AVAudioSessionCategoryOptionDuckOthers error:nil];
     self.playStatus = FUPlayStatusIdle;
     self.streamPcmQueue = [[NSOperationQueue alloc] init];
     self.streamPcmQueue.maxConcurrentOperationCount = 1;
@@ -58,6 +61,9 @@
     }
     //volume
     AudioQueueSetParameter(audioQueue, kAudioQueueParam_Volume, 1.0);
+    
+    //进入后台停止播放
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(stop) name:UIApplicationWillResignActiveNotification object:nil];
     
     return self;
 }
@@ -110,6 +116,7 @@
                 return;
             }
             if (self.playStatus == FUPlayStatusPause) {
+                [NSThread sleepForTimeInterval:0.1];
                 continue;
             }
             if (!self->audioQueueBufferUsed[i]) {
@@ -120,6 +127,7 @@
                 if (i >= NUM_BUFFERS) {
                     i = 0;
                 }
+                [NSThread sleepForTimeInterval:0.01];
             }
         }
         self->audioQueueBuffers[i] -> mAudioDataByteSize = (unsigned int)len;
@@ -195,9 +203,10 @@ static void bufferCallback(void *inUserData,AudioQueueRef inAQ,AudioQueueBufferR
     }
     
     if (isEmpty) {
-//        NSLog(@"===FUStreamPlayer=== Buffer queue is empty");
+        NSLog(@"===FUStreamPlayer=== Buffer queue is empty");
+        [self stop];
 //        AudioQueueStop(self->audioQueue, false);
-        [self pause];
+//        [self pause];
     }
     
 }
