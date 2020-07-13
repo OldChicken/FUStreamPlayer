@@ -30,15 +30,13 @@
 - (instancetype)init {
     self = [super init];
     
-    NSLog(@"===FUStreamPlayer=== PcmPlayer [%@] has init",self);
-      
-    //    [_audioSession setCategory :AVAudioSessionCategoryPlayAndRecord error:nil];
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient
-                                          withOptions:AVAudioSessionCategoryOptionDuckOthers error:nil];
+//    NSLog(@"===FUStreamPlayer=== PcmPlayer [%@] has init",self);
+
     self.playStatus = FUPlayStatusIdle;
     self.streamPcmQueue = [[NSOperationQueue alloc] init];
     self.streamPcmQueue.maxConcurrentOperationCount = 1;
-  
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient
+                                     withOptions:AVAudioSessionCategoryOptionDuckOthers error:nil];
     //audioDescription
     audioDescription.mSampleRate  = 16000;
     audioDescription.mFormatID    = kAudioFormatLinearPCM;
@@ -63,13 +61,14 @@
     AudioQueueSetParameter(audioQueue, kAudioQueueParam_Volume, 1.0);
     
     //进入后台停止播放
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(stop) name:UIApplicationWillResignActiveNotification object:nil];
+//    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(stop) name:UIApplicationWillResignActiveNotification object:nil];
     
     return self;
 }
 
 - (void)dealloc {
-    NSLog(@"===FUStreamPlayer=== PcmPlayer [%@] has dealloc",self);
+//    NSLog(@"===FUStreamPlayer=== PcmPlayer [%@] has dealloc",self);
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     audioQueue = nil;
 }
 
@@ -78,6 +77,9 @@
     if (!pcmData || pcmData.length == 0) {
         return;
     }
+    
+    NSLog(@"===FUStreamPlayer=== play length %lu",(unsigned long)pcmData.length);
+    
     __weak typeof(self) weakSelf = self;
     [self.streamPcmQueue addOperationWithBlock:^{
         Byte *byte = (Byte *)pcmData.bytes;
@@ -108,6 +110,8 @@
         return;
     }
     
+//    NSLog(@"===FUStreamPlayer=== process length 5000");
+    
     if(audioQueue)
     {
         int i = 0;
@@ -134,7 +138,7 @@
         //copy audio data to buffer
         memcpy(self->audioQueueBuffers[i] -> mAudioData, byte, len);
         //padding buffer to audio queue
-        NSLog(@"===FUStreamPlayer=== number %d buffer become busy",i);
+//        NSLog(@"===FUStreamPlayer=== number %d buffer become busy",i);
         AudioQueueEnqueueBuffer(self->audioQueue, self->audioQueueBuffers[i], 0, NULL);
     }
     if (self.playStatus == FUPlayStatusPlay || self.playStatus == FUPlayStatusIdle ) {
@@ -204,9 +208,8 @@ static void bufferCallback(void *inUserData,AudioQueueRef inAQ,AudioQueueBufferR
     
     if (isEmpty) {
         NSLog(@"===FUStreamPlayer=== Buffer queue is empty");
-        [self stop];
 //        AudioQueueStop(self->audioQueue, false);
-//        [self pause];
+        [self stop];
     }
     
 }
