@@ -15,9 +15,10 @@
     //AudioQueue
     AudioQueueRef audioQueue;
     //AudioQueueBuffersArray
-    AudioQueueBufferRef audioQueueBuffers[NUM_BUFFERS];
+    AudioQueueBufferRef audioQueueBuffers[NUM_BUFFERS_LIMIT];
+    int audioQueueBufferUsidNumber;
     //AudioQueueBuffersStatusArray
-    BOOL audioQueueBufferUsed[NUM_BUFFERS];
+    BOOL audioQueueBufferUsed[NUM_BUFFERS_LIMIT];
 }
 
 @property (nonatomic,strong) NSOperationQueue *streamPcmQueue;
@@ -53,21 +54,20 @@
     
     //AudioQueue Buffer
     OSStatus osState = 0;
-    for (int i = 0; i < NUM_BUFFERS; i++) {
+    for (int i = 0; i < NUM_BUFFERS_LIMIT; i++) {
         audioQueueBufferUsed[i] = false;
         osState = AudioQueueAllocateBuffer(audioQueue, STREAM_PACKET_SIZE, &audioQueueBuffers[i]);
     }
     //volume
     AudioQueueSetParameter(audioQueue, kAudioQueueParam_Volume, 1.0);
     
-    //进入后台停止播放
-//    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(stop) name:UIApplicationWillResignActiveNotification object:nil];
+    audioQueueBufferUsidNum = 0;
     
     return self;
 }
 
 - (void)dealloc {
-//    NSLog(@"===FUStreamPlayer=== PcmPlayer [%@] has dealloc",self);
+    NSLog(@"===FUStreamPlayer=== PcmPlayer [%@] has dealloc",self);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     audioQueue = nil;
 }
@@ -110,41 +110,47 @@
         return;
     }
     
-//    NSLog(@"===FUStreamPlayer=== process length 5000");
+
+    if (audioQueueBufferUsidNumber < NUM_BUFFERS_LIMIT) {
+        
+    }else {
+        
+    }
     
-    if(audioQueue)
-    {
-        int i = 0;
-        while (true) {
-            if (self.playStatus == FUPlayStatusStop) {
-                return;
-            }
-            if (self.playStatus == FUPlayStatusPause) {
-                [NSThread sleepForTimeInterval:0.1];
-                continue;
-            }
-            if (!self->audioQueueBufferUsed[i]) {
-                self->audioQueueBufferUsed[i] = true;
-                break;
-            }else {
-                i++;
-                if (i >= NUM_BUFFERS) {
-                    i = 0;
-                }
-                [NSThread sleepForTimeInterval:0.01];
-            }
-        }
-        self->audioQueueBuffers[i] -> mAudioDataByteSize = (unsigned int)len;
-        //copy audio data to buffer
-        memcpy(self->audioQueueBuffers[i] -> mAudioData, byte, len);
-        //padding buffer to audio queue
-//        NSLog(@"===FUStreamPlayer=== number %d buffer become busy",i);
-        AudioQueueEnqueueBuffer(self->audioQueue, self->audioQueueBuffers[i], 0, NULL);
-    }
-    if (self.playStatus == FUPlayStatusPlay || self.playStatus == FUPlayStatusIdle ) {
-        [self start];
-    }
-    [NSThread sleepForTimeInterval:0.01];
+    
+//    if(audioQueue)
+//    {
+//        int i = 0;
+//        while (true) {
+//            if (self.playStatus == FUPlayStatusStop) {
+//                return;
+//            }
+//            if (self.playStatus == FUPlayStatusPause) {
+//                [NSThread sleepForTimeInterval:0.1];
+//                continue;
+//            }
+//            if (!self->audioQueueBufferUsed[i]) {
+//                self->audioQueueBufferUsed[i] = true;
+//                break;
+//            }else {
+//                i++;
+//                if (i >= NUM_BUFFERS) {
+//                    i = 0;
+//                }
+//                [NSThread sleepForTimeInterval:0.01];
+//            }
+//        }
+//        self->audioQueueBuffers[i] -> mAudioDataByteSize = (unsigned int)len;
+//        //copy audio data to buffer
+//        memcpy(self->audioQueueBuffers[i] -> mAudioData, byte, len);
+//        //padding buffer to audio queue
+////        NSLog(@"===FUStreamPlayer=== number %d buffer become busy",i);
+//        AudioQueueEnqueueBuffer(self->audioQueue, self->audioQueueBuffers[i], 0, NULL);
+//    }
+//    if (self.playStatus == FUPlayStatusPlay || self.playStatus == FUPlayStatusIdle ) {
+//        [self start];
+//    }
+//    [NSThread sleepForTimeInterval:0.01];
     
 }
 
@@ -191,7 +197,7 @@ static void bufferCallback(void *inUserData,AudioQueueRef inAQ,AudioQueueBufferR
 
 - (void)resetBufferState:(AudioQueueRef)audioQueueRef and:(AudioQueueBufferRef)audioQueueBufferRef {
     
-    for (int i = 0; i < NUM_BUFFERS; i++) {
+    for (int i = 0; i < NUM_BUFFERS_LIMIT; i++) {
         //reset buffer status
         if (audioQueueBufferRef == audioQueueBuffers[i]) {
             audioQueueBufferUsed[i] = false;
@@ -200,7 +206,7 @@ static void bufferCallback(void *inUserData,AudioQueueRef inAQ,AudioQueueBufferR
     }
     
     BOOL isEmpty = YES;
-    for (int i = 0; i < NUM_BUFFERS; i++) {
+    for (int i = 0; i < NUM_BUFFERS_LIMIT; i++) {
         if (audioQueueBufferUsed[i] == true) {
             isEmpty = NO;
         }

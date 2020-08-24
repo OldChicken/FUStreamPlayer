@@ -11,7 +11,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 //#import "FUStaEngine.h"
 
-#define NUM_BUFFERS 3
+#define NUM_BUFFERS_LIMIT 3
 
 typedef NS_ENUM(NSUInteger, FUPlayStatus) {
     FUPlayStatusIdle,
